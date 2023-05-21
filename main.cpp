@@ -4,7 +4,7 @@
 #include <ctime>
 #include <vector>
 
-#define CELLS_NUM 10
+#define CELLS_NUM 10000
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 800
 #define GRID_SIZE 100
@@ -56,22 +56,38 @@ void DrawGrid() {
     glEnd();
 }
 
+bool isCellAlive(int x, int y) {
+    return grid[x][y];
+}
+
+bool decideIfAlive(int x, int y) {
+    int aliveNeighbors = 0;
+    for (int dx = -1; dx <= 1; ++dx) {
+        for (int dy = -1; dy <= 1; ++dy) {
+            if (dx == 0 && dy == 0) {
+                continue;
+            }
+            int newX = (x + dx + GRID_SIZE) % GRID_SIZE;
+            int newY = (y + dy + GRID_SIZE) % GRID_SIZE;
+            if (isCellAlive(newX, newY)) {
+                ++aliveNeighbors;
+            }
+        }
+    }
+    if (isCellAlive(x, y)) {
+        return aliveNeighbors == 2 || aliveNeighbors == 3;
+    } else {
+        return aliveNeighbors == 3;
+    }
+}
+
 // Function to update the positions of the cells
 void UpdateGrid() {
     // Copy the current grid
     bool newGrid[GRID_SIZE][GRID_SIZE] = {false};
     for (int x = 0; x < GRID_SIZE; ++x) {
         for (int y = 0; y < GRID_SIZE; ++y) {
-            if (grid[x][y]) {
-                // Calculate a random direction for the cell to move in
-                int dx = rand() % 3 - 1; // -1, 0, or 1
-                int dy = rand() % 3 - 1; // -1, 0, or 1
-                // Calculate the new position of the cell
-                int newX = (x + dx + GRID_SIZE) % GRID_SIZE;
-                int newY = (y + dy + GRID_SIZE) % GRID_SIZE; 
-                // Move the cell to the new position
-                newGrid[newX][newY] = true;
-            }
+            newGrid[x][y] = decideIfAlive(x, y);
         }
     }
     // Replace the old grid with the new grid
