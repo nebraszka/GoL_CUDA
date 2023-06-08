@@ -4,10 +4,10 @@
 #include <vector>
 #include <cstring>
 
-#define CELLS_NUM 10000
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 800
-#define GRID_SIZE 500
+#define CELLS_NUM 300000 //10
+#define WINDOW_WIDTH 1200
+#define WINDOW_HEIGHT 1200
+#define GRID_SIZE 1200
 
 struct Position {
     float x;
@@ -26,7 +26,8 @@ struct Cell {
     bool alive;
 };
 
-Cell grid[GRID_SIZE][GRID_SIZE] = {{{0}}};
+Cell grid[GRID_SIZE][GRID_SIZE] = {{{.color = {0, 0, 0} , .position = {0, 0}, .alive = 0}}};
+Cell newGrid[GRID_SIZE][GRID_SIZE] = {};
 
 void DrawGrid() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -95,7 +96,6 @@ Color inheritColor(int x, int y) {
 }
 
 void UpdateGrid() {
-    Cell newGrid[GRID_SIZE][GRID_SIZE] = {{{0}}};
     for (int x = 0; x < GRID_SIZE; ++x) {
         for (int y = 0; y < GRID_SIZE; ++y) {
             newGrid[x][y].alive = decideIfAlive(x, y);
@@ -133,12 +133,12 @@ int main() {
         grid[x][y].color.b = (rand() % 255) / 255.0f;
     }
     while (!glfwWindowShouldClose(window)) {
-        static double lastTime = glfwGetTime();
-        double currentTime = glfwGetTime();
-        if (currentTime - lastTime >= 0.05) {
+        // static double lastTime = glfwGetTime();
+        // double currentTime = glfwGetTime();
+        // if (currentTime - lastTime >= 0.05) {
             UpdateGrid();
-            lastTime = currentTime;
-        }
+            // lastTime = currentTime;
+        // }
 
         DrawGrid();
         glfwSwapBuffers(window);
