@@ -16,16 +16,12 @@ struct TempTexture
         glBindTexture(GL_TEXTURE_2D, textureID);
 
         // Set texture parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);   // Set texture wrapping to GL_REPEAT
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        // Pre-allocate texture data
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
-
-        // glGenerateMipmap(GL_TEXTURE_RECTANGLE);
-
     }
 
     ~TempTexture() {
@@ -50,8 +46,7 @@ struct TempTexture
     }
 
 void setDataGPUFast(Color* img) {
-
-        CHECK_CUDA(cudaGraphicsGLRegisterImage(&resource, textureID, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsWriteDiscard));
+    CHECK_CUDA(cudaGraphicsGLRegisterImage(&resource, textureID, GL_TEXTURE_2D, cudaGraphicsRegisterFlagsWriteDiscard));
 
     cudaArray_t array;
     CHECK_CUDA(cudaGraphicsMapResources(1, &resource));

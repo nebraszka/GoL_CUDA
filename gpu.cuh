@@ -36,7 +36,6 @@ __global__ void updateGPU_kernel(Color* currentColor, bool* currentAlive, Color*
         nextAlive[y * width + x] = alive;
 
         if (alive) {
-            // If the cell is alive in the next generation, inherit the color from its neighbors
             nextColor[y * width + x] = {r / aliveNeighbours, g / aliveNeighbours, b / aliveNeighbours};
         }
         else {
@@ -46,9 +45,8 @@ __global__ void updateGPU_kernel(Color* currentColor, bool* currentAlive, Color*
 }
 
 void updateGPU(Color* currentColor, bool* currentAlive, Color* nextColor, bool* nextAlive, int width, int height) {
-    dim3 blockSize(16, 16);  // Set the block size
-    dim3 gridSize((width + blockSize.x - 1) / blockSize.x, (height + blockSize.y - 1) / blockSize.y);  // Set the grid size
+    dim3 blockSize(16, 16);
+    dim3 gridSize((width + blockSize.x - 1) / blockSize.x, (height + blockSize.y - 1) / blockSize.y);
     updateGPU_kernel<<<gridSize, blockSize>>>(currentColor, currentAlive, nextColor, nextAlive, width, height);
-    CHECK_CUDA(cudaDeviceSynchronize()); // wait for the kernel to finish
+    CHECK_CUDA(cudaDeviceSynchronize());
 }
-

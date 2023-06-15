@@ -33,7 +33,6 @@ void updateCPU(Grid<Location::Host>* current, Grid<Location::Host>* next, int wi
             next->alive[y * width + x] = alive;
 
             if (alive) {
-                // If the cell is alive in the next generation, inherit the color from its neighbors
                 next->color[y * width + x] = {r / aliveNeighbours, g / aliveNeighbours, b / aliveNeighbours};
             }
             else {

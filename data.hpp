@@ -22,8 +22,12 @@ struct Grid
 {
     bool* alive;
     Color* color;
+    int width, height;
 
     Grid(int width, int height) {
+        this->width = width;
+        this->height = height;
+
         if (location == Location::Device) {
             CHECK_CUDA(cudaMalloc(&color, sizeof(Color) * width * height));
             CHECK_CUDA(cudaMalloc(&alive, sizeof(bool) * width * height));
@@ -42,6 +46,24 @@ struct Grid
             delete[] alive;
         }
     }
+
+    void randomInit(int seed){
+        srand(seed);
+        for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
+            alive[y * width + x] = rand() % 2;
+            color[y * width + x] = {
+                (rand() % 255) / 255.0f,
+                (rand() % 255) / 255.0f,
+                (rand() % 255) / 255.0f
+            };
+        }
+    }
+    }
 };
 
-
+template <Location location>
+struct GridPointers {
+    Grid<location>* current;
+    Grid<location>* next;
+};
